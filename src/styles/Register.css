@@ -1,0 +1,806 @@
+
+/* ========================================
+   DIGIWORLD REGISTER PAGE
+   Original Design + Field Validation
+======================================== */
+
+/* 1. GLOBAL RESET */
+
+* {
+  box-sizing: border-box;
+  font-family: "Noto Sans Thai", Inter, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: "Noto Sans Thai", Inter, Arial, sans-serif;
+  font-weight: 400;
+  color: #183453;
+  background: #f5f9fd;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Noto Sans Thai", sans-serif;
+  font-weight: 600;
+  color: #183453;
+}
+
+p, label, input, button, a, span {
+  font-family: "Noto Sans Thai", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* 2. PAGE */
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f5f9fd;
+  color: #18324f;
+}
+
+/* 3. HEADER */
+
+.site-header {
+  width: 100%;
+  min-height: 96px;
+  padding: 16px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8eef5;
+  position: relative;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.brand > img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand-name {
+  color: #18324f;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+.brand-tagline {
+  color: #567087;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* 4. NAVIGATION */
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.main-nav a {
+  color: #18324f;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.main-nav a:hover {
+  color: #2864d7;
+}
+
+.header-cta {
+  min-height: 50px;
+  padding: 12px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 100px;
+  background: #2864d7;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.header-cta:hover {
+  background: #194fb9;
+  transform: translateY(-1px);
+}
+
+/* 5. LANGUAGE SELECTOR */
+
+.language-selector-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.language-selector {
+  min-height: 40px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d7e3f0;
+  border-radius: 100px;
+  background: #e8f1fa;
+  color: #18324f;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.language-code {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #2864d7;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.language-arrow {
+  color: #2864d7;
+  font-size: 15px;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1000;
+  width: 184px;
+  padding: 6px;
+  border: 1px solid #d7e3f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(24, 50, 79, 0.12);
+}
+
+.language-option {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #18324f;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.language-option:hover,
+.language-option.active {
+  background: #edf4ff;
+  color: #2864d7;
+}
+
+/* 6. MAIN LAYOUT */
+
+.register-main {
+  width: min(1120px, 90%);
+  margin: 0 auto;
+  padding: 56px 0;
+  display: grid;
+  grid-template-columns: 450px minmax(0, 1fr);
+  align-items: start;
+  gap: 64px;
+  flex: 1;
+}
+
+/* 7. INTRO SECTION */
+
+.intro-section {
+  width: 100%;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: #e4f1ff;
+  color: #18324f;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: 0.3px;
+}
+
+.intro-title {
+  width: 100%;
+  margin: 0;
+  color: #18324f;
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.5px;
+}
+
+.intro-description {
+  width: 100%;
+  max-width: 450px;
+  margin: 0;
+  color: #567087;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+.intro-image {
+  width: 100%;
+  height: 280px;
+  display: block;
+  object-fit: cover;
+  border-radius: 28px;
+  background: #e5edf7;
+}
+
+.intro-footer-text {
+  width: 100%;
+  margin: 0;
+  color: #567087;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+/* 8. REGISTER CARD */
+
+.form-card {
+  width: 100%;
+  min-width: 0;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid #dce7f1;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 16px 48px rgba(24, 50, 79, 0.07);
+}
+
+.form-card h2,
+.form-title {
+  margin: 0;
+  color: #18324f;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.form-description {
+  margin: -12px 0 0;
+  color: #567087;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+/* 9. FORM */
+
+.form-card form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group label {
+  display: block;
+  margin: 0;
+  color: #18324f;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* INPUT */
+
+.form-group input {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 13px;
+  border: 1px solid #dce7f1;
+  border-radius: 10px;
+  outline: none;
+  background: #f5f9fd;
+  color: #18324f;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input:focus {
+  border-color: #2864d7;
+  box-shadow: 0 0 0 3px rgba(40, 100, 215, 0.08);
+  background: #ffffff;
+}
+
+/* RED ERROR BORDER */
+
+.form-group input.input-error,
+.form-group input[aria-invalid="true"] {
+  border: 1px solid #d92d20 !important;
+  box-shadow: none;
+}
+
+/* ERROR TEXT */
+
+.field-error {
+  width: 100%;
+  margin: 0;
+  color: #d92d20;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+/* HINT TEXT */
+
+.field-hint {
+  width: 100%;
+  margin: 0;
+  color: #567087;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+/* 10. PASSWORD */
+
+.password-input-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.password-input-wrapper input {
+  padding-right: 68px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  color: #2864d7;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.password-toggle:hover {
+  color: #194fb9;
+}
+
+/* 11. CHECKBOX */
+
+.checkbox-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkbox-label {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #567087;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: #2864d7;
+  cursor: pointer;
+}
+
+.checkbox-label span {
+  flex: 1;
+}
+
+.checkbox-error {
+  color: #d92d20 !important;
+}
+
+.checkbox-error input {
+  accent-color: #d92d20;
+}
+
+/* 12. FORM MESSAGE */
+
+.form-message {
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.form-message.info {
+  border: 1px solid #b2ddff;
+  background: #eff8ff;
+  color: #175cd3;
+}
+
+/* 13. SUBMIT BUTTON */
+
+.form-submit {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 0;
+  padding: 12px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 100px;
+  background: #2864d7;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.form-submit:hover {
+  background: #194fb9;
+  transform: translateY(-1px);
+}
+
+.form-submit:active {
+  transform: translateY(0);
+}
+
+/* 14. LOGIN */
+
+.login-link {
+  margin: 0;
+  color: #2864d7;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.login-link a {
+  color: #2864d7;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* 15. FOOTER */
+
+.site-footer {
+  width: 100%;
+  min-height: 90px;
+  padding: 24px 5%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  background: #e4f1ff;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.footer-brand {
+  color: #18324f;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.footer-contact {
+  color: #2864d7;
+  font-size: 13px;
+}
+
+.footer-hours {
+  color: #567087;
+  font-size: 13px;
+}
+
+.footer-note {
+  color: #567087;
+  font-size: 12px;
+}
+
+.footer-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* 16. TABLET */
+
+@media (max-width: 1100px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .register-main {
+    width: 90%;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 32px;
+  }
+
+  .brand > img {
+    width: 58px;
+    height: 58px;
+  }
+
+  .main-nav {
+    gap: 16px;
+  }
+
+  .main-nav a {
+    font-size: 12px;
+  }
+
+  .form-card {
+    padding: 28px;
+  }
+}
+
+/* 17. SMALL TABLET */
+
+@media (max-width: 850px) {
+  .site-header {
+    min-height: auto;
+    flex-wrap: wrap;
+  }
+
+  .main-nav {
+    order: 5;
+    width: 100%;
+    justify-content: center;
+    padding-top: 8px;
+  }
+
+  .register-main {
+    width: min(620px, 90%);
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 42px 0;
+  }
+
+  .intro-section {
+    max-width: 100%;
+  }
+
+  .intro-image {
+    height: 300px;
+  }
+}
+
+/* 18. MOBILE */
+
+@media (max-width: 600px) {
+  .site-header {
+    padding: 12px 5%;
+    gap: 10px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand > img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand-name {
+    font-size: 16px;
+  }
+
+  .brand-tagline {
+    font-size: 7px;
+    letter-spacing: 0.5px;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .language-selector {
+    min-height: 36px;
+    padding: 6px 9px;
+    gap: 5px;
+    font-size: 11px;
+  }
+
+  .language-code {
+    width: 21px;
+    height: 21px;
+  }
+
+  .main-nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 18px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .main-nav a {
+    white-space: nowrap;
+    font-size: 11px;
+  }
+
+  .register-main {
+    width: 90%;
+    padding: 34px 0 42px;
+    gap: 30px;
+  }
+
+  .intro-section {
+    gap: 16px;
+  }
+
+  .intro-title {
+    font-size: 36px;
+    line-height: 1.4;
+  }
+
+  .intro-description {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .intro-image {
+    height: 220px;
+    border-radius: 18px;
+  }
+
+  .intro-footer-text {
+    font-size: 11px;
+  }
+
+  .form-card {
+    padding: 24px 18px;
+    border-radius: 18px;
+    gap: 16px;
+  }
+
+  .form-title,
+  .form-card h2 {
+    font-size: 23px;
+  }
+
+  .form-description {
+    font-size: 13px;
+  }
+
+  .form-card form {
+    gap: 18px;
+  }
+
+  .form-group input {
+    min-height: 48px;
+  }
+
+  .site-footer {
+    padding: 22px 5%;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-right {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* 19. SMALL MOBILE */
+
+@media (max-width: 360px) {
+  .brand-tagline {
+    display: none;
+  }
+
+  .intro-title {
+    font-size: 31px;
+  }
+
+  .form-card {
+    padding: 20px 14px;
+  }
+}
