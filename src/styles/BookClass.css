@@ -1,0 +1,205 @@
+/* สีและขนาดอ้างอิงจาก Figma */
+.bk-page {
+  --blue: #2864d7;
+  --ink: #18324f;
+  --muted: #567087;
+  --line: #dce7f1;
+  --bg: #f5f9fd;
+  --info: #e4f1ff;
+  --yellow: #fff0b8;
+  --green-bg: #def3e9;
+  --green: #207855;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.bk-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 36px 80px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.bk-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.bk-eyebrow { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: var(--blue); }
+.bk-head h1 { margin: 0 0 8px; font-size: 38px; font-weight: 400; line-height: 1.5; }
+.bk-sub { margin: 0; font-size: 16px; color: var(--muted); }
+
+/* ปุ่ม */
+.bk-primary,
+.bk-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 100px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.bk-primary { background: var(--blue); color: #fff; border: 1px solid transparent; }
+.bk-outline { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.bk-primary:disabled,
+.bk-outline:disabled { background: var(--line); color: var(--muted); border-color: var(--line); cursor: not-allowed; }
+.bk-full { width: 100%; height: 50px; }
+
+/* ขั้นตอน */
+.bk-steps {
+  list-style: none;
+  margin: 0;
+  padding: 18px;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  gap: 32px;
+}
+.bk-steps li { flex: 1; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+.bk-steps li span {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 12px; background: var(--line); color: var(--muted);
+}
+.bk-steps li.is-on { color: var(--ink); }
+.bk-steps li.is-on span { background: var(--blue); color: #fff; }
+
+/* เลย์เอาต์ */
+.bk-layout { display: flex; gap: 24px; align-items: flex-start; }
+.bk-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+.bk-side { width: 392px; flex-shrink: 0; position: sticky; top: 24px; }
+
+.bk-card { background: #fff; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+.bk-card h2 { margin: 0; font-size: 24px; font-weight: 400; }
+.bk-muted { color: var(--muted); margin: 0; }
+.bk-small { font-size: 12px; }
+.bk-center { text-align: center; }
+
+/* เด็ก + ยอด */
+.bk-who { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 15px; }
+.bk-chip {
+  height: 38px; padding: 0 16px; border-radius: 100px;
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.bk-chip.is-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+.bk-balance {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 18px; background: var(--info); border-radius: 16px;
+}
+.bk-balance strong { display: block; font-size: 17px; font-weight: 400; }
+.bk-balance small { color: var(--muted); font-size: 12px; }
+.bk-balance-num { text-align: right; }
+.bk-balance-num b { display: block; font-size: 26px; color: var(--blue); }
+
+.bk-nocredit {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 16px 18px; background: var(--yellow); border-radius: 16px;
+}
+.bk-nocredit p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+/* ตัวกรอง */
+.bk-filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.bk-filters label { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: var(--muted); }
+.bk-filters select {
+  padding: 12px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); font: inherit; font-size: 13px; font-weight: 500;
+}
+
+/* แท็บวัน */
+.bk-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.bk-day {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px; border: 0; border-radius: 16px;
+  background: var(--bg); color: var(--ink); font: inherit; cursor: pointer;
+}
+.bk-day small { font-size: 12px; color: var(--muted); }
+.bk-day b { font-size: 20px; font-weight: 400; }
+.bk-day.is-on { background: var(--blue); color: #fff; }
+.bk-day.is-on small { color: #fff; }
+.bk-day:disabled { opacity: 0.45; cursor: default; }
+
+/* การ์ดรอบเรียน */
+.bk-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.bk-col { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 90px; }
+.bk-col h3 { margin: 0; font-size: 14px; font-weight: 400; }
+
+.bk-slot {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: #fff;
+}
+.bk-slot strong { font-size: 17px; font-weight: 400; }
+.bk-slot p { margin: 0; font-size: 13px; color: var(--muted); }
+.bk-slot button { width: 100%; height: 38px; font-size: 13px; padding: 0 16px; }
+.bk-slot-top { width: 100%; display: flex; justify-content: space-between; align-items: center; color: var(--blue); }
+.bk-slot.is-selected { background: var(--info); border: 2px solid var(--blue); }
+.bk-slot.is-full,
+.bk-slot.is-conflict,
+.bk-slot.is-booked,
+.bk-slot.is-nocredits { background: var(--bg); }
+.bk-slot.is-full strong,
+.bk-slot.is-conflict strong,
+.bk-slot.is-booked strong,
+.bk-slot.is-nocredits strong { color: var(--muted); }
+
+.bk-tag { padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
+.bk-tag.is-ok { background: var(--green-bg); color: var(--green); }
+.bk-tag.is-full { background: var(--bg); color: var(--ink); }
+.bk-tag.is-warn { background: var(--yellow); color: var(--ink); }
+
+/* กล่องข้อความ */
+.bk-note { padding: 18px; border-radius: 16px; font-size: 14px; }
+.bk-note.is-blue { background: var(--info); }
+.bk-note.is-yellow { background: var(--yellow); }
+.bk-note p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+/* สรุป */
+.bk-summary { border: 1px solid var(--line); gap: 20px; }
+.bk-status { align-self: flex-start; padding: 5px 12px; border-radius: 100px; background: var(--yellow); font-size: 12px; font-weight: 600; }
+.bk-status.is-done { background: var(--green-bg); color: var(--green); }
+.bk-sum-info { display: flex; flex-direction: column; gap: 6px; }
+.bk-sum-info strong { font-size: 18px; font-weight: 400; }
+.bk-sum-info p { margin: 0; font-size: 14px; color: var(--ink); }
+.bk-sum-info p.bk-muted { color: var(--muted); }
+.bk-summary hr { width: 100%; border: 0; height: 1px; background: var(--line); margin: 0; }
+.bk-rows { display: flex; flex-direction: column; gap: 12px; }
+.bk-rows div { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+.bk-rows b { font-weight: 400; color: var(--ink); font-size: 15px; }
+.bk-rows b.is-big { font-size: 20px; color: var(--blue); }
+
+.bk-ack { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; color: var(--muted); }
+.bk-ack input { margin-top: 2px; accent-color: var(--blue); }
+
+.bk-alert { margin: 0; padding: 12px 14px; border-radius: 12px; background: #fdecec; color: #a32020; font-size: 13px; }
+
+.bk-gate { align-items: flex-start; }
+.bk-gate p { margin: 0; color: var(--muted); }
+
+/* แท็บเล็ต / มือถือ */
+@media (max-width: 1100px) {
+  .bk-container { padding: 28px 24px 40px; }
+  .bk-layout { flex-direction: column; }
+  .bk-side { width: 100%; position: static; }
+}
+@media (max-width: 640px) {
+  .bk-head { flex-direction: column; align-items: flex-start; }
+  .bk-head h1 { font-size: 28px; }
+  .bk-steps { flex-direction: column; gap: 12px; }
+  .bk-filters { grid-template-columns: 1fr; }
+  .bk-days { gap: 4px; }
+  .bk-day { padding: 8px 2px; }
+  .bk-day b { font-size: 16px; }
+  .bk-card { padding: 18px; border-radius: 20px; }
+  .bk-balance, .bk-nocredit { flex-direction: column; align-items: flex-start; }
+}
