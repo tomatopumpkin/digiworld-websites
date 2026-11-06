@@ -1,0 +1,212 @@
+/* ===============================================================
+   Child card on the Parent Portal (การ์ดข้อมูลเด็ก)
+   วางที่ src/styles/ParentKid.css (ไฟล์ใหม่ ไม่ต้องแก้ ParentPortal.css)
+   =============================================================== */
+
+.pk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid #dce7f1;
+  border-radius: 24px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* ---------- Top row ---------- */
+.pk-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pk-avatar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: #e4f1ff;
+  color: #18324f;
+  font-size: 28px;
+  font-weight: 400;
+}
+.pk-name {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.pk-name strong {
+  color: #18324f;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 40px;
+  overflow-wrap: anywhere;
+}
+.pk-name small {
+  color: #567087;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.pk-edit {
+  flex: none;
+  color: #2864d7;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: default;
+}
+
+/* ---------- Chips ---------- */
+.pk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pk-chip {
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: #e8eff5;
+  color: #567087;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.pk-chip.is-blue {
+  background: #e4f1ff;
+  color: #2864d7;
+}
+
+/* ---------- Package tile ---------- */
+.pk-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border-radius: 16px;
+  background: #e4f1ff;
+}
+.pk-tile-title {
+  color: #18324f;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.pk-tile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #567087;
+  font-size: 14px;
+}
+.pk-tile-row b {
+  color: #2864d7;
+  font-size: 28px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.pk-bar {
+  display: flex;
+  gap: 5px;
+}
+.pk-bar i {
+  flex: 1 1 0;
+  height: 7px;
+  border-radius: 4px;
+  background: #fff;
+}
+.pk-bar i.is-on {
+  background: #2864d7;
+}
+.pk-tile small {
+  color: #567087;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ---------- Availability line ---------- */
+.pk-status {
+  margin: 0;
+  color: #567087;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.pk-status.is-ok {
+  color: #207855;
+}
+
+/* ---------- Actions ---------- */
+.pk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.pk-primary,
+.pk-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 100px;
+  box-sizing: border-box;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.pk-primary {
+  border: 1px solid #2864d7;
+  background: #2864d7;
+  color: #fff;
+}
+.pk-primary:hover {
+  border-color: #1f55bd;
+  background: #1f55bd;
+}
+.pk-outline {
+  border: 1px solid #dce7f1;
+  background: #fff;
+  color: #18324f;
+  cursor: default;
+}
+.pk-link {
+  color: #2864d7;
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+}
+.pk-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .pk-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .pk-top {
+    flex-wrap: wrap;
+  }
+  .pk-name strong {
+    font-size: 21px;
+    line-height: 1.4;
+  }
+  .pk-tile {
+    padding: 18px;
+  }
+  .pk-tile-row b {
+    font-size: 22px;
+  }
+  .pk-primary {
+    width: 100%;
+  }
+}

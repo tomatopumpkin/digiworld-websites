@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
   useNavigate,
 } from "react-router-dom";
 
@@ -18,12 +19,17 @@ import MemberHome from "./pages/MemberHome";
 import Courses from "./pages/Courses";
 import TrialBooking from "./pages/TrialBooking";
 import BookClass from "./pages/BookClass";
+import ParentPortal from "./pages/ParentPortal";
+import AddChild from "./pages/AddChild";
+
+// Admin
+import { AuthProvider } from "./auth/AuthProvider";
+import RequireAdmin from "./auth/RequireAdmin";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 // Shared components
 import ProtectedRoute from "./components/ProtectedRoute";
-import SiteHeader from "./components/SiteHeader";
-import SiteFooter from "./components/SiteFooter";
-import useLanguage from "./lib/useLanguage";
 import useSession from "./lib/useSession";
 import { supabase } from "./lib/supabase";
 
@@ -56,24 +62,6 @@ function RecoveryRedirect() {
   }, [navigate]);
 
   return null;
-}
-
-// หน้าชั่วคราว (ยังไม่ได้พัฒนา) ใช้ header/footer ชุดเดียวกับทุกหน้า
-function PlaceholderPage({ title, text }) {
-  const [language, setLanguage] = useLanguage();
-
-  return (
-    <div className="success-page">
-      <SiteHeader language={language} onLanguageChange={setLanguage} />
-      <main className="success-main">
-        <section className="success-card">
-          <h1>{title}</h1>
-          <p>{text}</p>
-        </section>
-      </main>
-      <SiteFooter language={language} />
-    </div>
-  );
 }
 
 // หน้าแรก: ล็อกอินแล้วเห็น MemberHome / ยังไม่ล็อกอินเห็น GuestHome
@@ -132,18 +120,45 @@ function App() {
           }
         />
 
-        {/* หน้าพื้นที่ผู้ปกครอง (ต้องล็อกอิน) */}
+        {/* หน้าพื้นที่ผู้ปกครอง: บุตรหลานของฉัน (ต้องล็อกอิน) */}
         <Route
           path="/parent-portal"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Parent Portal"
-                text="พื้นที่ผู้ปกครองกำลังอยู่ระหว่างการพัฒนา"
-              />
+              <ParentPortal />
             </ProtectedRoute>
           }
         />
+
+        {/* หน้าเพิ่มโปรไฟล์บุตรหลาน (ต้องล็อกอิน) */}
+        <Route
+          path="/add-child"
+          element={
+            <ProtectedRoute>
+              <AddChild />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ฝั่งแอดมิน: ครอบ AuthProvider เฉพาะ /admin ไม่กระทบหน้าสมาชิก */}
+        <Route
+          path="/admin"
+          element={
+            <AuthProvider>
+              <Outlet />
+            </AuthProvider>
+          }
+        >
+          <Route path="login" element={<AdminLogin />} />
+          <Route
+            index
+            element={
+              <RequireAdmin>
+                <AdminDashboard />
+              </RequireAdmin>
+            }
+          />
+        </Route>
 
         {/* หน้าที่ไม่พบ */}
         <Route path="*" element={<Navigate to="/" replace />} />

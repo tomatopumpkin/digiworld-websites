@@ -11,7 +11,7 @@ const navItems = [
   { to: "/", key: "home" },
   { to: "/courses", key: "courses" },
   { to: "/parent-portal", key: "parentPortal", protected: true },
-  { to: "/booking", key: "booking", protected: true },
+  { to: "/book-class", key: "booking", protected: true },
 ];
 
 const iconProps = {
@@ -117,6 +117,7 @@ export default function SiteHeader({ language, onLanguageChange }) {
       </nav>
 
       <div className="sl-actions">
+        {/* ปุ่มทดลองเรียนฟรี ยังไปหน้า /booking (ฟอร์มทดลองเรียน) */}
         <Link
           to={isGuest ? "/login" : "/booking"}
           state={isGuest ? { from: "/booking" } : undefined}
