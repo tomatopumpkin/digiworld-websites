@@ -20,7 +20,7 @@ export const siteText = {
     footerLinks1: "คอร์สเรียน / คลาสทดลอง / ทีมงาน",
     footerLinks2: "นโยบายการจอง / นโยบายความเป็นส่วนตัว",
     footerTalk: "มาคุยเรื่องการเรียนรู้ของลูกกัน",
-    openEveryday: "เปิดทุกวัน 9:30 AM–6:30 PM",
+    openEveryday: "เปิดทุกวัน 9:30 AM–7:00 PM",
     sampleNote: "เว็บไซต์แนวคิด • ราคา บุคคล รีวิว และข้อมูลทั้งหมดเป็นตัวอย่าง",
   },
   en: {
@@ -37,7 +37,7 @@ export const siteText = {
     footerLinks1: "Courses / Trial Class / Our Team",
     footerLinks2: "Booking Policy / Privacy Policy",
     footerTalk: "Let’s Talk About Your Child’s Learning Journey",
-    openEveryday: "Open daily 9:30 AM–6:30 PM",
+    openEveryday: "Open daily 9:30 AM–7:00 PM",
     sampleNote: "Concept website • Prices, people, reviews, and all information are samples",
   },
   zh: {
@@ -54,7 +54,7 @@ export const siteText = {
     footerLinks1: "课程 / 试听课 / 我们的团队",
     footerLinks2: "预约政策 / 隐私政策",
     footerTalk: "聊聊孩子的学习旅程",
-    openEveryday: "每天营业 9:30 AM–6:30 PM",
+    openEveryday: "每天营业 9:30 AM–7:00 PM",
     sampleNote: "概念网站 • 价格、人物、评价及所有信息均为示例",
   },
   ru: {
@@ -71,7 +71,7 @@ export const siteText = {
     footerLinks1: "Курсы / Пробное занятие / Наша команда",
     footerLinks2: "Правила записи / Политика конфиденциальности",
     footerTalk: "Поговорим об обучении вашего ребёнка",
-    openEveryday: "Ежедневно 9:30 AM–6:30 PM",
+    openEveryday: "Ежедневно 9:30 AM–7:00 PM",
     sampleNote: "Концепт-сайт • цены, люди, отзывы и вся информация — примеры",
   },
 };
