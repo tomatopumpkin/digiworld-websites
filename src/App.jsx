@@ -26,6 +26,7 @@ import ParentSchedule from "./pages/ParentSchedule";
 import ParentHistory from "./pages/ParentHistory";
 import ParentPackages from "./pages/ParentPackages";
 import ParentReschedule from "./pages/ParentReschedule";
+import ParentCancel from "./pages/ParentCancel";
 
 // Admin
 import { AuthProvider } from "./auth/AuthProvider";
@@ -154,6 +155,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* หน้าพื้นที่ผู้ปกครอง: ยกเลิกการจองคลาส (ต้องล็อกอิน) */}
+<Route
+  path="/parent-cancel/:id"
+  element={
+    <ProtectedRoute>
+      <ParentCancel />
+    </ProtectedRoute>
+  }
+/>
 
         {/* หน้าพื้นที่ผู้ปกครอง: ประวัติการเรียน (ต้องล็อกอิน) */}
         <Route

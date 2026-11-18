@@ -14,10 +14,10 @@ const PARENT_AREA_PATH = "/parent-portal";
 const HISTORY_PATH = "/parent-history";
 const PACKAGES_PATH = "/parent-packages";
 const RESCHEDULE_PATH = "/parent-reschedule";
+const CANCEL_PATH = "/parent-cancel";
 const BOOK_PATH = "/book-class";
 const LOGIN_PATH = "/login";
 const ADD_CHILD_PATH = "/add-child";
-const LINE_URL = "https://line.me/R/ti/p/%40digiworldphuket";
 const MAX_OPEN = 4;
 const STUDIO = "DigiWorld Phuket";
 
@@ -665,14 +665,9 @@ function ParentSchedule() {
                           <Link className="ps-btn is-outline is-sm" to={`${RESCHEDULE_PATH}/${id}`}>
                             {t.reschedule}
                           </Link>
-                          <a
-                            className="ps-btn is-danger is-sm"
-                            href={LINE_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
+                          <Link className="ps-btn is-danger is-sm" to={`${CANCEL_PATH}/${id}`}>
                             {t.cancelBooking}
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </article>
