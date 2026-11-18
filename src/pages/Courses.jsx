@@ -149,12 +149,8 @@ const AGE_FILTERS = [
   { id: "4-6", from: 4, to: 6 },
   { id: "6+", from: 6, to: 9 },
   { id: "10+", from: 10, to: 99 },
-<<<<<<< HEAD
 ];    
-=======
-];
 // ตัวกรองอายุ: เด็กอายุอยู่ในช่วง [from, to] → แสดงคอร์สที่ช่วงอายุทับกัน
->>>>>>> 341edba87b98c5552ec330672af8928d8dde413d
 
 const INTERESTS = ["all", "basics", "games", "robotics", "coding", "art"];
 
