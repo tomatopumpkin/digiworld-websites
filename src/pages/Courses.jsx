@@ -111,7 +111,7 @@ const COURSES = [
     interests: ["coding"],
     format: "group",
     students: 4,
-    sessions: 8,
+    sessions: 12,
     minutes: 90,
     price: 10000,
     icon: "code",
@@ -149,7 +149,7 @@ const AGE_FILTERS = [
   { id: "4-6", from: 4, to: 6 },
   { id: "6+", from: 6, to: 9 },
   { id: "10+", from: 10, to: 99 },
-];
+];    
 
 const INTERESTS = ["all", "basics", "games", "robotics", "coding", "art"];
 

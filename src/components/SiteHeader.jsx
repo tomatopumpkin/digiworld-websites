@@ -15,7 +15,7 @@ const navItems = [
 ];
 
 const iconProps = {
-  fill: "none",
+  fill: "none", 
   stroke: "currentColor",
   strokeWidth: 2,
   strokeLinecap: "round",

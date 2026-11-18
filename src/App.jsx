@@ -21,6 +21,11 @@ import TrialBooking from "./pages/TrialBooking";
 import BookClass from "./pages/BookClass";
 import ParentPortal from "./pages/ParentPortal";
 import AddChild from "./pages/AddChild";
+import EditChild from "./pages/EditChild";
+import ParentSchedule from "./pages/ParentSchedule";
+import ParentHistory from "./pages/ParentHistory";
+import ParentPackages from "./pages/ParentPackages";
+import ParentReschedule from "./pages/ParentReschedule";
 
 // Admin
 import { AuthProvider } from "./auth/AuthProvider";
@@ -130,12 +135,62 @@ function App() {
           }
         />
 
+        {/* หน้าพื้นที่ผู้ปกครอง: ตารางเรียน (ต้องล็อกอิน) */}
+        <Route
+          path="/parent-schedule"
+          element={
+            <ProtectedRoute>
+              <ParentSchedule />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* หน้าพื้นที่ผู้ปกครอง: เลื่อนคลาส (ต้องล็อกอิน) */}
+        <Route
+          path="/parent-reschedule/:id"
+          element={
+            <ProtectedRoute>
+              <ParentReschedule />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* หน้าพื้นที่ผู้ปกครอง: ประวัติการเรียน (ต้องล็อกอิน) */}
+        <Route
+          path="/parent-history"
+          element={
+            <ProtectedRoute>
+              <ParentHistory />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* หน้าพื้นที่ผู้ปกครอง: แพ็กเกจและชำระเงิน (ต้องล็อกอิน) */}
+        <Route
+          path="/parent-packages"
+          element={
+            <ProtectedRoute>
+              <ParentPackages />
+            </ProtectedRoute>
+          }
+        />
+
         {/* หน้าเพิ่มโปรไฟล์บุตรหลาน (ต้องล็อกอิน) */}
         <Route
           path="/add-child"
           element={
             <ProtectedRoute>
               <AddChild />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* หน้าแก้ไขโปรไฟล์บุตรหลาน (ต้องล็อกอิน) */}
+        <Route
+          path="/edit-child/:id"
+          element={
+            <ProtectedRoute>
+              <EditChild />
             </ProtectedRoute>
           }
         />
