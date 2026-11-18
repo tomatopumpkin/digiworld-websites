@@ -9,30 +9,35 @@ import useLanguage from "../lib/useLanguage";
 import useSession from "../lib/useSession";
 import { supabase } from "../lib/supabase";
 
+// ---------------------------------------------------------------
+// Settings (change the paths / names to match your project)
+// ---------------------------------------------------------------
 const TZ = "Asia/Bangkok";
+const CANCEL_MINUTES = 30; // keep in sync with BookClass.jsx
 const BOOK_PATH = "/book-class";
-const SCHEDULE_PATH = "/parent-schedule";
-const HISTORY_PATH = "/parent-history";
-const PACKAGES_PATH = "/parent-packages";
 const COURSES_PATH = "/courses";
 const LOGIN_PATH = "/login";
-const ADD_CHILD_PATH = "/add-child";
-const EDIT_CHILD_PATH = "/edit-child";
+const ADD_CHILD_PATH = "/add-child"; // หน้าเพิ่มโปรไฟล์บุตรหลาน (AddChild.jsx)
 const LINE_ID = "@digiworldphuket";
 const LINE_URL = "https://line.me/R/ti/p/%40digiworldphuket";
 const MAX_UPCOMING = 5;
 const MAX_HISTORY = 5;
 
+// "ข่าวดีจากครู" card. Expected columns:
+// id, student_id, teacher_name, course_id, message, created_at, work_url (optional)
+// If the table doesn't exist or is empty, the card is simply hidden.
+// Set SHOW_TEACHER_NOTES to false to skip the request completely.
 const SHOW_TEACHER_NOTES = true;
 const TEACHER_NOTES_TABLE = "teacher_notes";
 
+// Same names as the Courses page (could be moved to a shared file, e.g. lib/courses.js)
 const COURSES = [
   { id: "matata", name: "Matata" },
-  { id: "scratch", name: "Scratch & Game Design" },
+  { id: "scratch-game-design", name: "Scratch Game Design" },
   { id: "procreate", name: "Procreate" },
   { id: "spike-essential", name: "LEGO SPIKE Essential" },
-  { id: "roblox", name: "Roblox Game Maker" },
-  { id: "python", name: "Python Programming" },
+  { id: "roblox-game-maker", name: "Roblox Game Maker" },
+  { id: "python-programming", name: "Python Programming" },
   { id: "spike-prime", name: "LEGO SPIKE Prime" },
 ];
 
@@ -43,8 +48,10 @@ const LOCALES = {
   ru: "ru-RU",
 };
 
+// Soft colours for each child (cycled by position) — from the Figma design
 const TONES = ["#E4F1FF", "#EDE8FF", "#DEF3E9", "#FFF0B8"];
 
+// Thai + English for now (other languages fall back to English)
 const translations = {
   th: {
     topChip: "PARENT PORTAL · Logged In",
@@ -88,6 +95,11 @@ const translations = {
     emptyTitle: "ยังไม่มีคลาสที่จองไว้",
     emptyText: "เลือกรอบเรียนที่สะดวก แล้วจองได้ในไม่กี่ขั้นตอน",
     emptyBtn: "ดูรอบเรียนและจองคลาส",
+    hoursUnit: "{n} ชม.",
+    minutesUnit: "{n} นาที",
+    policyTitle: "เปลี่ยนแผนได้ ล่วงหน้า {w}",
+    policyText:
+      "ยกเลิกล่วงหน้า ≥{w} คืน 1 ครั้ง เลื่อนเป็นรอบที่มีที่นั่งโดยไม่หักเพิ่ม หลังจากนั้นหรือไม่มาเรียน ไม่คืนครั้ง กรุณาติดต่อทีมดูแล",
     newsTitle: "ข่าวดีจากครู",
     newsViewWork: "ดูผลงาน ↗",
     histTitle: "ประวัติการเรียนและจอง",
@@ -164,6 +176,11 @@ const translations = {
     emptyTitle: "No classes booked yet",
     emptyText: "Pick a session that suits you and book in a few steps.",
     emptyBtn: "Browse sessions and book",
+    hoursUnit: "{n} hr",
+    minutesUnit: "{n} min",
+    policyTitle: "Change plans at least {w} ahead",
+    policyText:
+      "Cancel {w}+ ahead: 1 session refunded. Reschedule into a session with open seats at no extra cost. After that, or if you miss class, no refund. Please contact our team.",
     newsTitle: "Good news from the teacher",
     newsViewWork: "View work ↗",
     histTitle: "Class and booking history",
@@ -200,6 +217,9 @@ const translations = {
   },
 };
 
+// ---------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------
 const fill = (text, values) =>
   Object.entries(values).reduce((r, [k, v]) => r.split(`{${k}}`).join(v), text);
 
@@ -212,6 +232,7 @@ const rangeLabel = (s) => `${hhmm(s.starts_at)}–${hhmm(endIso(s))}`;
 const courseName = (id) => COURSES.find((c) => c.id === id)?.name || id;
 const initialOf = (name) => (name && name.trim() ? Array.from(name.trim())[0].toUpperCase() : "?");
 
+// Extra requests must never break the page: on any error they just return []
 const safe = async (query, label) => {
   try {
     const { data, error } = await query;
@@ -226,6 +247,9 @@ const safe = async (query, label) => {
   }
 };
 
+// ---------------------------------------------------------------
+// Small icons
+// ---------------------------------------------------------------
 const BellIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
     <path
@@ -235,6 +259,14 @@ const BellIcon = () => (
       strokeLinejoin="round"
     />
     <path d="M8.5 16.5a1.6 1.6 0 003 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <circle cx="10" cy="10" r="8.1" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M10 9v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <circle cx="10" cy="6.2" r="1" fill="currentColor" />
   </svg>
 );
 
@@ -250,6 +282,9 @@ const BulbIcon = () => (
   </svg>
 );
 
+// ---------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------
 function ParentPortal() {
   const [language, setLanguage] = useLanguage();
   const { session, loading: sessionLoading } = useSession();
@@ -289,9 +324,11 @@ function ParentPortal() {
     [locale]
   );
 
+  // ---------- Load data ----------
   const load = useCallback(async () => {
     setFailed(false);
 
+    // Main request: children + packages + confirmed bookings (with their session)
     const { data, error } = await supabase
       .from("students")
       .select(
@@ -315,6 +352,7 @@ function ParentPortal() {
     }));
     setStudents(list);
 
+    // Extra requests (history + teacher note) — a failure here only hides that section
     const ids = list.map((s) => s.id);
     if (ids.length) {
       const [historyRows, noteRows] = await Promise.all([
@@ -364,6 +402,8 @@ function ParentPortal() {
     load().finally(() => setLoading(false));
   };
 
+  // ---------- Derived values ----------
+  // Future confirmed bookings of all children, soonest first
   const upcoming = useMemo(() => {
     const now = Date.now();
     return students
@@ -375,6 +415,7 @@ function ParentPortal() {
       .sort((a, b) => new Date(a.session.starts_at) - new Date(b.session.starts_at));
   }, [students]);
 
+  // One entry per child: their courses with balance and usage
   const kids = useMemo(() => {
     const now = Date.now();
     const list = students.map((s, index) => {
@@ -390,6 +431,7 @@ function ParentPortal() {
         const total = pkgs.reduce((n, p) => n + p.total_sessions, 0);
         const remaining = pkgs.reduce((n, p) => n + p.sessions_remaining, 0);
         const booked = future.filter((b) => b.class_sessions.course_id === id).length;
+        // "remaining" = not yet booked, so attended = total - remaining - booked ahead
         const done = Math.max(total - remaining - booked, 0);
         const latest = pkgs[pkgs.length - 1];
         return { id, name: courseName(id), total, remaining, booked, done, price: latest.price };
@@ -402,9 +444,15 @@ function ParentPortal() {
         remainingTotal: courses.reduce((n, c) => n + c.remaining, 0),
       };
     });
+    // เด็กที่เหลือจำนวนครั้งรวมมากที่สุดขึ้นก่อน (เท่ากันให้เรียงตามชื่อเหมือนเดิม)
+    // สีการ์ดกำหนดจากลำดับชื่อก่อนเรียง จึงไม่เปลี่ยนสีเมื่อลำดับสลับ
     return list.sort((a, b) => b.remainingTotal - a.remainingTotal);
   }, [students]);
 
+  // History rows. Status is worked out from the booking:
+  //   cancelled            -> "ยกเลิกแล้ว"
+  //   confirmed, past      -> "เรียนแล้ว"   (assumes a past confirmed booking = attended)
+  //   confirmed, upcoming  -> "ยืนยันแล้ว"  (−1 ครั้ง)
   const historyRows = useMemo(() => {
     const now = Date.now();
     const nameOf = (id) => students.find((s) => s.id === id)?.name || "";
@@ -445,6 +493,12 @@ function ParentPortal() {
     (user?.email ? user.email.split("@")[0] : "");
   const parentFirstName = parentName.split(" ")[0];
 
+  const windowText =
+    CANCEL_MINUTES % 60 === 0
+      ? fill(t.hoursUnit, { n: CANCEL_MINUTES / 60 })
+      : fill(t.minutesUnit, { n: CANCEL_MINUTES });
+
+  // ---------- Not-ready states ----------
   const renderGate = (title, text, action) => (
     <div className="pp-container">
       <section className="pp-card pp-gate">
@@ -488,7 +542,6 @@ function ParentPortal() {
       </>
     );
   } else {
-    const tabStyle = { display: "inline-flex", alignItems: "center", textDecoration: "none" };
     body = (
       <div className="pp-container">
         {/* Heading */}
@@ -512,20 +565,24 @@ function ParentPortal() {
           </div>
         </header>
 
-        {/* Tabs */}
+        {/* Tabs (only the overview exists for now) */}
         <div className="pp-tabs" role="tablist">
           <button type="button" role="tab" aria-selected="true" className="pp-tab is-on">
             {t.tabOverview}
           </button>
-          <Link className="pp-tab" to={SCHEDULE_PATH} role="tab" aria-selected="false" style={tabStyle}>
-            {t.tabSchedule}
-          </Link>
-          <Link className="pp-tab" to={HISTORY_PATH} role="tab" aria-selected="false" style={tabStyle}>
-            {t.tabHistory}
-          </Link>
-          <Link className="pp-tab" to={PACKAGES_PATH} role="tab" aria-selected="false" style={tabStyle}>
-            {t.tabPackages}
-          </Link>
+          {[t.tabSchedule, t.tabHistory, t.tabPackages].map((label) => (
+            <button
+              key={label}
+              type="button"
+              role="tab"
+              aria-selected="false"
+              className="pp-tab"
+              disabled
+              title={t.soon}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Family header */}
@@ -548,9 +605,9 @@ function ParentPortal() {
                   <strong>{student.name}</strong>
                   {subtitle && <small>{subtitle}</small>}
                 </div>
-                <Link className="pk-edit" to={`${EDIT_CHILD_PATH}/${student.id}`}>
+                <span className="pk-edit" aria-disabled="true" title={t.soon}>
                   {t.editProfile}
-                </Link>
+                </span>
               </div>
 
               <div className="pk-chips">
@@ -612,9 +669,9 @@ function ParentPortal() {
                     <Link className="pk-primary" to={`${BOOK_PATH}?student=${student.id}`}>
                       {fill(t.bookFor, { name: student.name })}
                     </Link>
-                    <Link className="pk-outline" to={HISTORY_PATH} style={{ textDecoration: "none" }}>
+                    <span className="pk-outline" aria-disabled="true" title={t.soon}>
                       {t.progress}
-                    </Link>
+                    </span>
                     <Link className="pk-link" to={COURSES_PATH}>
                       {t.buySimple}
                     </Link>
@@ -625,8 +682,8 @@ function ParentPortal() {
           ))}
         </div>
 
-        {/* Upcoming classes */}
-        <div className="pp-bottom" style={{ display: "grid", gridTemplateColumns: "1fr" }}>
+        {/* Upcoming classes + side notes */}
+        <div className="pp-bottom">
           <section className="pp-next">
             <div className="pp-next-head">
               <h2>{t.nextTitle}</h2>
@@ -672,13 +729,14 @@ function ParentPortal() {
                     <div className="pp-class-foot">
                       <span className="pp-chip">{t.deducted}</span>
                       <div className="pp-class-actions">
-                        <Link
+                        <a
                           className="pp-outline is-sm"
-                          to={`/parent-reschedule/${id}`}
-                          style={{ textDecoration: "none" }}
+                          href={LINE_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
                           {t.reschedule}
-                        </Link>
+                        </a>
                         <a
                           className="pp-outline is-sm"
                           href={LINE_URL}
@@ -691,15 +749,25 @@ function ParentPortal() {
                     </div>
                   </div>
                 ))}
-                <Link className="pp-link" to={SCHEDULE_PATH}>
+                <Link className="pp-link" to={BOOK_PATH}>
                   {t.allSchedule}
                 </Link>
               </>
             )}
           </section>
 
-          {note && (
-            <aside className="pp-side">
+          <aside className="pp-side">
+            <div className="pp-note">
+              <span className="pp-note-icon">
+                <InfoIcon />
+              </span>
+              <div>
+                <strong>{fill(t.policyTitle, { w: windowText })}</strong>
+                <p>{fill(t.policyText, { w: windowText })}</p>
+              </div>
+            </div>
+
+            {note && (
               <div className="pp-news">
                 <span className="pp-news-icon">
                   <BulbIcon />
@@ -726,8 +794,8 @@ function ParentPortal() {
                   </a>
                 )}
               </div>
-            </aside>
-          )}
+            )}
+          </aside>
         </div>
 
         {/* History */}
