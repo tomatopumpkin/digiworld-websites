@@ -38,6 +38,22 @@ const COURSES = [
     image: "",
   },
   {
+    id: "spike-essential",
+    name: "LEGO SPIKE Essential",
+    group: "builders",
+    ageLabel: "6+",
+    ageMin: 6,
+    ageMax: 9,
+    interests: ["robotics"],
+    format: "group",
+    students: 6,
+    sessions: 8,
+    minutes: 90,
+    price: 6000,
+    icon: "robot",
+    image: "",
+  },
+  {
     id: "scratch",
     name: "Scratch & Game Design",
     group: "builders",
@@ -69,19 +85,20 @@ const COURSES = [
     icon: "brush",
     image: "",
   },
+
   {
-    id: "spike-essential",
-    name: "LEGO SPIKE Essential",
-    group: "builders",
-    ageLabel: "6+",
-    ageMin: 6,
-    ageMax: 9,
+    id: "spike-prime",
+    name: "LEGO SPIKE Prime",
+    group: "makers",
+    ageLabel: "7+",
+    ageMin: 7,
+    ageMax: 99,
     interests: ["robotics"],
     format: "group",
     students: 6,
     sessions: 8,
-    minutes: 90,
-    price: 6000,
+    minutes: 120,
+    price: 7500,
     icon: "robot",
     image: "",
   },
@@ -117,22 +134,6 @@ const COURSES = [
     icon: "code",
     image: "",
   },
-  {
-    id: "spike-prime",
-    name: "LEGO SPIKE Prime",
-    group: "makers",
-    ageLabel: "10+",
-    ageMin: 10,
-    ageMax: 99,
-    interests: ["robotics"],
-    format: "group",
-    students: 6,
-    sessions: 8,
-    minutes: 120,
-    price: 7500,
-    icon: "robot",
-    image: "",
-  },
 ];
 
 // กลุ่มหัวข้อด้านบนของการ์ด
@@ -142,14 +143,18 @@ const GROUPS = [
   { id: "makers", tone: "purple" },
 ];
 
-// ตัวกรองอายุ: เด็กอายุอยู่ในช่วง [from, to] → แสดงคอร์สที่ช่วงอายุทับกัน
 const AGE_FILTERS = [
   { id: "all" },
   { id: "3+", from: 3, to: 5 },
   { id: "4-6", from: 4, to: 6 },
   { id: "6+", from: 6, to: 9 },
   { id: "10+", from: 10, to: 99 },
+<<<<<<< HEAD
 ];    
+=======
+];
+// ตัวกรองอายุ: เด็กอายุอยู่ในช่วง [from, to] → แสดงคอร์สที่ช่วงอายุทับกัน
+>>>>>>> 341edba87b98c5552ec330672af8928d8dde413d
 
 const INTERESTS = ["all", "basics", "games", "robotics", "coding", "art"];
 
@@ -604,7 +609,9 @@ function Courses() {
 
     return COURSES.filter((course) => {
       const ageOk =
-        !age || age.id === "all" || (course.ageMin <= age.to && course.ageMax >= age.from);
+        !age ||
+        age.id === "all" ||
+        (course.ageMin >= age.from && course.ageMin <= age.to);
       const interestOk =
         interestFilter === "all" || course.interests.includes(interestFilter);
       return ageOk && interestOk;

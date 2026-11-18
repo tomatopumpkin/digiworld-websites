@@ -11,7 +11,16 @@ import { supabase } from "../lib/supabase";
 // ---------------------------------------------------------------
 // ตั้งค่า
 // ---------------------------------------------------------------
-const TRIAL_MINUTES = 45;
+const TRIAL_MINUTES = {
+  matata: 30,
+  essential: 30,
+  scratch: 30,
+  procreate: 30,
+  prime: 45,
+  roblox: 90,
+  python: 45,
+};
+
 const DAYS_AHEAD = 14; // เปิดให้เลือกกี่วันล่วงหน้า (เริ่มจากพรุ่งนี้)
 // รอบเวลาตัวอย่าง: ภายหลังควรดึงจากตารางในฐานข้อมูลและตรวจที่นั่งที่ฝั่งเซิร์ฟเวอร์
 const SLOT_STARTS = ["10:00", "11:45", "14:00", "16:00"];
@@ -80,7 +89,7 @@ const translations = {
     datePlaceholder: "เลือกวัน",
     slot: "รอบเวลา",
     slotPlaceholder: "เลือกรอบเวลา",
-    slotHelp: "รอบทดลองแยกจากคลาสปกติ ใช้เวลา 45 นาที",
+    slotHelp: "รอบทดลองแยกจากคลาสปกติ ใช้เวลา {minutes} นาที",
     ageWarning: "คอร์สนี้แนะนำสำหรับอายุ {range} ครูจะช่วยประเมินความพร้อมของลูกให้ในวันทดลองเรียน",
     consent: "ยินยอมให้ใช้ข้อมูลติดต่อและข้อมูลเด็กเพื่อจัดคลาสทดลอง ตามนโยบายความเป็นส่วนตัว",
     review: "ตรวจสอบข้อมูล",
@@ -110,7 +119,7 @@ const translations = {
     tipText: "กรอกช่องที่มี * ให้ครบ หากอีเมลหรือเบอร์โทรไม่ถูกต้อง จะแสดงข้อความใต้ช่องและยังไม่ส่งคำขอ",
     helpTitle: "ถ้าวันที่เลือกไม่มีรอบที่ต้องการ",
     helpText: "เลือกวันอื่น หรือติดต่อ LINE {line} หรือโทร {phone} ทีมงานจะช่วยหารอบให้",
-    openHours: "เปิดทุกวัน 9:30–18:30",
+    openHours: "เปิดทุกวัน 9:30–19:00",
     doneTitle: "ส่งคำขอทดลองเรียนแล้ว",
     doneText: "ทีมงานจะติดต่อกลับทางเบอร์โทรหรืออีเมลที่ให้ไว้ เพื่อยืนยันที่นั่ง",
     doneCourses: "ดูคอร์สอื่น",
@@ -142,7 +151,7 @@ const translations = {
     datePlaceholder: "Select a date",
     slot: "Time slot",
     slotPlaceholder: "Select a time slot",
-    slotHelp: "Trial sessions are separate from regular classes and last 45 minutes.",
+    slotHelp: "Trial sessions are separate from regular classes and last {minutes} minutes.",
     ageWarning: "This course is recommended for ages {range}. Our teachers will assess your child's readiness at the trial.",
     consent: "I agree to the use of contact and child information to arrange the trial class, as described in the privacy policy.",
     review: "Review details",
@@ -172,7 +181,7 @@ const translations = {
     tipText: "Fill in all fields marked *. If your email or phone number is invalid, a message appears under the field and the request is not sent.",
     helpTitle: "If your date has no suitable slot",
     helpText: "Pick another date, or contact us on LINE {line} or call {phone} and we will help find a slot.",
-    openHours: "Open daily 9:30 AM–6:30 PM",
+    openHours: "Open daily 9:30 AM–7:00 PM",
     doneTitle: "Trial request sent",
     doneText: "Our team will contact you by phone or email to confirm your seat.",
     doneCourses: "Browse other courses",
@@ -204,7 +213,7 @@ const translations = {
     datePlaceholder: "选择日期",
     slot: "时间段",
     slotPlaceholder: "选择时间段",
-    slotHelp: "试听课与正式课程分开安排，时长 45 分钟。",
+    slotHelp: "试听课与正式课程分开安排，时长 {minutes} 分钟。",
     ageWarning: "该课程建议年龄为 {range}。试听当天老师会帮助评估孩子的准备情况。",
     consent: "我同意按照隐私政策，使用联系方式和孩子信息来安排试听课。",
     review: "检查信息",
@@ -234,7 +243,7 @@ const translations = {
     tipText: "请填写所有带 * 的项目。若邮箱或手机号码不正确，会在输入框下方提示，且不会提交申请。",
     helpTitle: "如果所选日期没有合适的时段",
     helpText: "请选择其他日期，或通过 LINE {line} 或电话 {phone} 联系我们，我们会帮您安排。",
-    openHours: "每天 9:30–18:30 营业",
+    openHours: "每天 9:30–19:00 营业",
     doneTitle: "试听申请已提交",
     doneText: "团队会通过您留下的电话或邮箱联系您确认名额。",
     doneCourses: "查看其他课程",
@@ -266,7 +275,7 @@ const translations = {
     datePlaceholder: "Выберите дату",
     slot: "Время",
     slotPlaceholder: "Выберите время",
-    slotHelp: "Пробное занятие проходит отдельно от обычных и длится 45 минут.",
+    slotHelp: "Пробное занятие проходит отдельно от обычных и длится {minutes} минут.",
     ageWarning: "Курс рекомендован для возраста {range}. На пробном занятии преподаватель оценит готовность ребёнка.",
     consent: "Я согласен(на) на использование контактных данных и данных ребёнка для организации пробного занятия согласно политике конфиденциальности.",
     review: "Проверить данные",
@@ -296,7 +305,7 @@ const translations = {
     tipText: "Заполните все поля со звёздочкой *. Если почта или телефон указаны неверно, под полем появится сообщение, а заявка не отправится.",
     helpTitle: "Если на выбранную дату нет подходящего времени",
     helpText: "Выберите другую дату или свяжитесь с нами в LINE {line} либо по телефону {phone}.",
-    openHours: "Ежедневно 9:30–18:30",
+    openHours: "Ежедневно 9:30–19:00",
     doneTitle: "Заявка отправлена",
     doneText: "Мы свяжемся с вами по телефону или почте, чтобы подтвердить место.",
     doneCourses: "Посмотреть другие курсы",
@@ -313,6 +322,16 @@ const fill = (text, values) =>
     (result, [key, value]) => result.split(`{${key}}`).join(value),
     text
   );
+
+const getEndTime = (start, minutes) => {
+  const [hours, mins] = start.split(":").map(Number);
+
+  const date = new Date();
+  date.setHours(hours, mins + minutes, 0, 0);
+
+  return date.toTimeString().slice(0, 5);
+};
+  
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -360,6 +379,60 @@ const INITIAL = {
   consent: false,
 };
 
+const TRIAL_CONFIG = {
+  openingTime: "10:00",
+  closingTime: "19:00",
+  interval: 30,
+  lunchBreak: {
+    start: "12:00",
+    end: "13:00",
+  },
+};
+
+const generateTrialSlots = (courseId) => {
+  const duration = TRIAL_MINUTES[courseId] || 45;
+
+  const toMinutes = (time) => {
+    const [h, m] = time.split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  const toTime = (minutes) =>
+    `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(
+      minutes % 60
+    ).padStart(2, "0")}`;
+
+  const opening = toMinutes(TRIAL_CONFIG.openingTime);
+  const closing = toMinutes(TRIAL_CONFIG.closingTime);
+
+  const lunchStart = toMinutes(TRIAL_CONFIG.lunchBreak.start);
+  const lunchEnd = toMinutes(TRIAL_CONFIG.lunchBreak.end);
+
+  const slots = [];
+
+  for (
+    let start = opening;
+    start + duration <= closing;
+    start += TRIAL_CONFIG.interval
+  ) {
+    const end = start + duration;
+
+    // ไม่ให้รอบเรียนทับเวลาพักกลางวัน
+    const overlapsLunch =
+      start < lunchEnd && end > lunchStart;
+
+    if (overlapsLunch) continue;
+
+    slots.push({
+      start: toTime(start),
+      end: toTime(end),
+      label: `${toTime(start)} - ${toTime(end)}`,
+    });
+  }
+
+  return slots;
+};
+
 // ---------------------------------------------------------------
 // คอมโพเนนต์ย่อย
 // ---------------------------------------------------------------
@@ -391,6 +464,8 @@ function SummaryRow({ label, value, strong }) {
   );
 }
 
+
+
 // ---------------------------------------------------------------
 // หน้าหลัก
 // ---------------------------------------------------------------
@@ -410,6 +485,18 @@ function TrialBooking() {
   const [step, setStep] = useState("form"); // form | review | done
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
+  const TRIAL_MINUTES = {
+  matata: 45,
+  scratch: 60,
+  procreate: 45,
+  "spike-essential": 60,
+  "spike-prime": 60,
+  roblox: 90,
+  python: 90,
+};
+  const trialMinutes = TRIAL_MINUTES[values.courseId] || 45;
+
+  const trialSlots = generateTrialSlots(values.courseId);
 
   // เติมอีเมลจากบัญชีที่ล็อกอินอยู่ (ถ้ายังไม่ได้กรอก)
   useEffect(() => {
@@ -640,7 +727,10 @@ function TrialBooking() {
             value={values.courseId}
             className={errors.courseId ? "has-error" : ""}
             aria-invalid={Boolean(errors.courseId)}
-            onChange={(e) => update("courseId", e.target.value)}
+            onChange={(e) => {update("courseId", e.target.value);
+              update("slot","")
+            }
+            }
           >
             <option value="">{t.coursePlaceholder}</option>
             {COURSES.map((c) => (
@@ -684,16 +774,17 @@ function TrialBooking() {
               onChange={(e) => update("slot", e.target.value)}
             >
               <option value="">{t.slotPlaceholder}</option>
-              {SLOT_STARTS.map((start) => (
-                <option key={start} value={slotLabel(start)}>
-                  {slotLabel(start)}
+
+              {trialSlots.map((slot) => (
+                <option key={slot.start} value={slot.label}>
+                  {slot.label}
                 </option>
               ))}
             </select>
           </Field>
         </div>
 
-        <p className="tb-help">{t.slotHelp}</p>
+        <p className="tb-help">{fill(t.slotHelp, { minutes: trialMinutes })}</p>
       </section>
 
       <div className="tb-consent">
@@ -858,7 +949,7 @@ function TrialBooking() {
               <SummaryRow label={t.sideWhen} value={whenText} />
               <SummaryRow
                 label={t.sideDuration}
-                value={fill(t.sideDurationValue, { m: TRIAL_MINUTES })}
+                value={fill(t.sideDurationValue, { m: trialMinutes  })}
               />
               <SummaryRow label={t.sideCost} value="฿0" strong />
 
