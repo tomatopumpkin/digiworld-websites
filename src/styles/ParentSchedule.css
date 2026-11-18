@@ -192,14 +192,20 @@
   padding: 0 18px;
   font-size: 13px;
 }
-.ps-text-btn {
-  color: #567087;
-  font-size: 13px;
-  text-decoration: none;
+/* Red button (cancel booking) */
+.ps-btn.is-danger {
+  background: #fff;
+  border-color: #f3b8b3;
+  color: #b42318;
 }
-.ps-text-btn:hover {
-  color: #2864d7;
-  text-decoration: underline;
+.ps-btn.is-danger:hover {
+  background: #fde8e8;
+  border-color: #b42318;
+  color: #b42318;
+}
+.ps-btn.is-danger:focus-visible {
+  outline: 3px solid rgba(180, 35, 24, 0.3);
+  outline-offset: 2px;
 }
 .ps-link {
   color: #2864d7;
@@ -367,7 +373,7 @@
 .ps-class-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
 /* ---------- Open sessions ---------- */

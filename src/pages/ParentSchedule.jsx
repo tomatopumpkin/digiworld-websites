@@ -666,7 +666,7 @@ function ParentSchedule() {
                             {t.reschedule}
                           </Link>
                           <a
-                            className="ps-text-btn"
+                            className="ps-btn is-danger is-sm"
                             href={LINE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
