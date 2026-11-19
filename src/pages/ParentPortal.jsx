@@ -737,7 +737,7 @@ function ParentPortal() {
                     }}
                   >
                     {courses.map((c) => (
-                      <div key={c.id}>
+                      <div key={c.id} className="pk-course-card">
 
                         {/* Package information */}
                         <div className="pk-tile" style={{ background: tone }}>
