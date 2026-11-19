@@ -166,6 +166,21 @@
   color: #207855;
 }
 
+.pk-level {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #245a91;
+}
+
+.pk-level small {
+  color: #64748b;
+  font-weight: 400;
+}
+
 /* ---------- Actions ---------- */
 .pk-actions {
   display: flex;

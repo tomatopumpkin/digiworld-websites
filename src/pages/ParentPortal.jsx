@@ -36,13 +36,13 @@ const TEACHER_NOTES_TABLE = "teacher_notes";
 
 // Same names as the Courses page (could be moved to a shared file, e.g. lib/courses.js)
 const COURSES = [
-  { id: "matata", name: "Matata" },
-  { id: "scratch-game-design", name: "Scratch Game Design" },
+  { id: "matata", name: "Matata", seesionPerLevel: 16 },
+  { id: "scratch-game-design", name: "Scratch Game Design", seesionPerLevel: 8 },
   { id: "procreate", name: "Procreate" },
-  { id: "spike-essential", name: "LEGO SPIKE Essential" },
-  { id: "roblox-game-maker", name: "Roblox Game Maker" },
-  { id: "python-programming", name: "Python Programming" },
-  { id: "spike-prime", name: "LEGO SPIKE Prime" },
+  { id: "spike-essential", name: "LEGO SPIKE Essential", seesionPerLevel: 8 },
+  { id: "roblox-game-maker", name: "Roblox Game Maker", seesionPerLevel: 12 },
+  { id: "python-programming", name: "Python Programming", seesionPerLevel: 12 },
+  { id: "spike-prime", name: "LEGO SPIKE Prime", seesionPerLevel: 8 },
 ];
 
 const LOCALES = {
@@ -137,6 +137,7 @@ const translations = {
     noStudentsText:
       "เพิ่มโปรไฟล์บุตรหลานของคุณเพื่อเริ่มต้น หรือติดต่อทีมงานหากต้องการความช่วยเหลือ",
     contact: "ติดต่อทีมงานทาง LINE",
+    currentLevel: "กำลังเรียน Level {level}",
   },
   en: {
     topChip: "PARENT PORTAL · Logged In",
@@ -218,6 +219,7 @@ const translations = {
     noStudentsText:
       "Add your child's profile to get started, or contact our team if you need help.",
     contact: "Contact us on LINE",
+    currentLevel: "Currently learning Level {level}",
   },
 };
 
@@ -371,14 +373,14 @@ function ParentPortal() {
         ),
         SHOW_TEACHER_NOTES
           ? safe(
-              supabase
-                .from(TEACHER_NOTES_TABLE)
-                .select("id, student_id, teacher_name, course_id, message, created_at, work_url")
-                .in("student_id", ids)
-                .order("created_at", { ascending: false })
-                .limit(1),
-              "teacher note"
-            )
+            supabase
+              .from(TEACHER_NOTES_TABLE)
+              .select("id, student_id, teacher_name, course_id, message, created_at, work_url")
+              .in("student_id", ids)
+              .order("created_at", { ascending: false })
+              .limit(1),
+            "teacher note"
+          )
           : Promise.resolve([]),
       ]);
       setHistory(historyRows);
@@ -420,48 +422,94 @@ function ParentPortal() {
   }, [students]);
 
   // One entry per child: their courses with balance and usage
+
   const kids = useMemo(() => {
     const now = Date.now();
+
     const list = students.map((s, index) => {
       const future = s.bookings.filter(
-        (b) => b.class_sessions && new Date(b.class_sessions.starts_at).getTime() > now
+        (b) =>
+          b.class_sessions &&
+          new Date(b.class_sessions.starts_at).getTime() > now
       );
+
       const byCourse = {};
+
       s.packages.forEach((p) => {
-        if (!byCourse[p.course_id]) byCourse[p.course_id] = [];
+        if (!byCourse[p.course_id]) {
+          byCourse[p.course_id] = [];
+        }
+
         byCourse[p.course_id].push(p);
       });
+
       const courses = Object.entries(byCourse).map(([id, pkgs]) => {
-        // Matata มีจำนวนครั้งทั้งหมด 16 ครั้ง
         const total =
           id === "matata" ? 16 :
-          id === "spike-essential" ? 8:
-          id === "procreate" ? 8:
-          id === "scratch-game-design" ? 8:
-          id === "spike-prime" ? 8:
-          id === "roblox-game-maker" ? 12:
-          id === "python-programming" ? 12:
-          pkgs.reduce((n, p) => n + p.total_sessions, 0);
+            id === "spike-essential" ? 8 :
+              id === "procreate" ? 8 :
+                id === "scratch-game-design" ? 8 :
+                  id === "spike-prime" ? 8 :
+                    id === "roblox-game-maker" ? 12 :
+                      id === "python-programming" ? 12 :
+                        pkgs.reduce((n, p) => n + p.total_sessions, 0);
 
-        const remaining = pkgs.reduce((n, p) => n + p.sessions_remaining, 0);
-        const booked = future.filter((b) => b.class_sessions.course_id === id).length;
-        // "remaining" = not yet booked, so attended = total - remaining - booked ahead
+        const remaining = pkgs.reduce(
+          (n, p) => n + p.sessions_remaining,
+          0
+        );
+
+        const booked = future.filter(
+          (b) => b.class_sessions.course_id === id
+        ).length;
+
         const done = Math.max(total - remaining - booked, 0);
+
         const latest = pkgs[pkgs.length - 1];
-        return { id, name: courseName(id), total, remaining, booked, done, price: latest.price };
+
+        const course = COURSES.find((c) => c.id === id);
+
+        const sessionsPerLevel = course?.sessionsPerLevel || 8;
+
+        const currentLevel =
+          Math.floor(done / sessionsPerLevel) + 1;
+
+        const levelProgress = done % sessionsPerLevel;
+
+        return {
+          id,
+          name: courseName(id),
+          total,
+          remaining,
+          booked,
+          done,
+          price: latest.price,
+          currentLevel,
+          levelProgress,
+          sessionsPerLevel,
+        };
       });
+
       return {
         student: s,
         courses,
         tone: TONES[index % TONES.length],
-        subtitle: [s.full_name, s.english_name].filter(Boolean).join(" / "),
-        remainingTotal: courses.reduce((n, c) => n + c.remaining, 0),
+        subtitle: [s.full_name, s.english_name]
+          .filter(Boolean)
+          .join(" / "),
+        remainingTotal: courses.reduce(
+          (n, c) => n + c.remaining,
+          0
+        ),
       };
     });
-    // เด็กที่เหลือจำนวนครั้งรวมมากที่สุดขึ้นก่อน (เท่ากันให้เรียงตามชื่อเหมือนเดิม)
-    // สีการ์ดกำหนดจากลำดับชื่อก่อนเรียง จึงไม่เปลี่ยนสีเมื่อลำดับสลับ
-    return list.sort((a, b) => b.remainingTotal - a.remainingTotal);
+
+    // เรียงเด็กที่เหลือจำนวนครั้งรวมมากที่สุดขึ้นก่อน
+    return list.sort(
+      (a, b) => b.remainingTotal - a.remainingTotal
+    );
   }, [students]);
+
 
   // History rows. Status is worked out from the booking:
   //   cancelled            -> "ยกเลิกแล้ว"
@@ -484,8 +532,8 @@ function ParentPortal() {
           kind === "attended"
             ? fill(t.actAttended, { time })
             : kind === "booked"
-            ? fill(t.actBooked, { date: sessionDate, time: hhmm(s.starts_at) })
-            : fill(t.actCancelled, { date: sessionDate, time: hhmm(s.starts_at) });
+              ? fill(t.actBooked, { date: sessionDate, time: hhmm(s.starts_at) })
+              : fill(t.actCancelled, { date: sessionDate, time: hhmm(s.starts_at) });
         return {
           id: b.id,
           when,
@@ -627,18 +675,16 @@ function ParentPortal() {
           </Link>
         </div>
 
-        
+
+
         {/* Children */}
         <div className="pp-kids">
           {kids.map(({ student, courses, tone, subtitle }) => (
             <article key={student.id} className="pk-card">
+
               {/* Child information */}
               <div className="pk-top">
-                <span
-                  className="pk-avatar"
-                  style={{ background: tone }}
-                  aria-hidden="true"
-                >
+                <span className="pk-avatar" style={{ background: tone }} aria-hidden="true">
                   {initialOf(student.name)}
                 </span>
 
@@ -687,11 +733,12 @@ function ParentPortal() {
                       display: "grid",
                       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                       columnGap: "20px",
-                      rowGap: "20px"
+                      rowGap: "24px",
                     }}
                   >
                     {courses.map((c) => (
                       <div key={c.id}>
+
                         {/* Package information */}
                         <div className="pk-tile" style={{ background: tone }}>
                           <span className="pk-tile-title">{c.name}</span>
@@ -703,21 +750,13 @@ function ParentPortal() {
                                 c.price
                                   ? `฿${Number(c.price).toLocaleString("en-US")}`
                                   : null,
-                              ]
-                                .filter(Boolean)
-                                .join(" · ")}
+                              ].filter(Boolean).join(" · ")}
                             </span>
 
                             <b>{fill(t.remaining, { n: c.remaining })}</b>
                           </div>
 
-                          <div
-                            className="pk-bar"
-                            role="img"
-                            aria-label={`${fill(t.remaining, {
-                              n: c.remaining,
-                            })} / ${c.total}`}
-                          >
+                          <div className="pk-bar" role="img">
                             {Array.from({ length: c.total }).map((_, i) => (
                               <i
                                 key={i}
@@ -733,45 +772,52 @@ function ParentPortal() {
                             })}{" "}
                             · {t.noExpiry}
                           </small>
+
+                          {/* Level information */}
+                          <div className="pk-level">
+                            <span>{fill(t.currentLevel, { level: c.currentLevel })}</span>
+                            <small>
+                              {c.levelProgress}/{c.sessionsPerLevel} ครั้ง
+                            </small>
+                          </div>
                         </div>
+                        {/* End Package information */}
 
                         {/* Package status */}
-                        <p
-                          className={`pk-status${
-                            c.remaining > 0 ? " is-ok" : ""
-                          }`}
-                        >
+                        <p className={`pk-status${c.remaining > 0 ? " is-ok" : ""}`}>
                           {fill(
-                            c.remaining > 0
-                              ? t.hasRemaining
-                              : t.noRemaining,
+                            c.remaining > 0 ? t.hasRemaining : t.noRemaining,
                             { course: c.name }
                           )}
                         </p>
 
-                        {/* Book this course */}
+                        {/* Actions */}
                         <div className="pk-actions">
                           <Link
                             className="pk-primary"
-                            to={`${BOOK_PATH}?student=${encodeURIComponent(
-                              student.id
-                            )}&course=${encodeURIComponent(c.id)}`}
+                            to={`${BOOK_PATH}?student=${encodeURIComponent(student.id)}&course=${encodeURIComponent(c.id)}`}
                           >
                             {t.book}
                           </Link>
 
                           <Link
-                              className="pk-outline"
-                              to={`/parent-progress?student=${encodeURIComponent(student.id)}&course=${encodeURIComponent(c.id)}`}
-                            >
-                              {t.progress}
-                            </Link> 
-                          </div>
+                            className="pk-outline"
+                            to={`/parent-progress?student=${encodeURIComponent(student.id)}&course=${encodeURIComponent(c.id)}`}
+                          >
+                            {t.progress}
+                          </Link>
+
+                          <Link className="pk-link" to={COURSES_PATH}>
+                            {t.buySimple}
+                          </Link>
+                        </div>
+
                       </div>
                     ))}
                   </div>
                 </>
               )}
+
             </article>
           ))}
         </div>
