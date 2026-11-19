@@ -159,6 +159,8 @@
   color: #567087;
   font-size: 13px;
   line-height: 1.6;
+  margin-top: 13px;
+  margin-bottom: 13px;
 }
 .pk-status.is-ok {
   color: #207855;

@@ -127,8 +127,12 @@
 .pp-avail.is-ok { color: var(--green); }
 .pp-avail.is-none { color: #a32020; }
 
-.pp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.pp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 20px;}
 
+.pk-actions .pk-link {
+  font-size: 13px;
+  white-space: nowrap;
+}
 /* Notes */
 .pp-note { display: flex; gap: 12px; align-items: flex-start; padding: 20px; border-radius: 16px; }
 .pp-note.is-blue { background: var(--info); }

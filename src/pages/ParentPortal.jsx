@@ -13,11 +13,15 @@ import { supabase } from "../lib/supabase";
 // Settings (change the paths / names to match your project)
 // ---------------------------------------------------------------
 const TZ = "Asia/Bangkok";
-const CANCEL_MINUTES = 30; // keep in sync with BookClass.jsx
+const CANCEL_MINUTES = 30;
 const BOOK_PATH = "/book-class";
+const OVERVIEW_PATH = "/parent-portal";
+const SCHEDULE_PATH = "/parent-schedule";
+const HISTORY_PATH = "/parent-history";
+const PACKAGES_PATH = "/parent-packages";
 const COURSES_PATH = "/courses";
 const LOGIN_PATH = "/login";
-const ADD_CHILD_PATH = "/add-child"; // หน้าเพิ่มโปรไฟล์บุตรหลาน (AddChild.jsx)
+const ADD_CHILD_PATH = "/add-child";
 const LINE_ID = "@digiworldphuket";
 const LINE_URL = "https://line.me/R/ti/p/%40digiworldphuket";
 const MAX_UPCOMING = 5;
@@ -576,23 +580,43 @@ function ParentPortal() {
         </header>
 
         {/* Tabs (only the overview exists for now) */}
+        {/* Tabs */}
         <div className="pp-tabs" role="tablist">
-          <button type="button" role="tab" aria-selected="true" className="pp-tab is-on">
+          <Link
+            className="pp-tab is-on"
+            to={OVERVIEW_PATH}
+            role="tab"
+            aria-selected="true"
+          >
             {t.tabOverview}
-          </button>
-          {[t.tabSchedule, t.tabHistory, t.tabPackages].map((label) => (
-            <button
-              key={label}
-              type="button"
-              role="tab"
-              aria-selected="false"
-              className="pp-tab"
-              disabled
-              title={t.soon}
-            >
-              {label}
-            </button>
-          ))}
+          </Link>
+
+          <Link
+            className="pp-tab"
+            to={SCHEDULE_PATH}
+            role="tab"
+            aria-selected="false"
+          >
+            {t.tabSchedule}
+          </Link>
+
+          <Link
+            className="pp-tab"
+            to={HISTORY_PATH}
+            role="tab"
+            aria-selected="false"
+          >
+            {t.tabHistory}
+          </Link>
+
+          <Link
+            className="pp-tab"
+            to={PACKAGES_PATH}
+            role="tab"
+            aria-selected="false"
+          >
+            {t.tabPackages}
+          </Link>
         </div>
 
         {/* Family header */}
@@ -603,32 +627,47 @@ function ParentPortal() {
           </Link>
         </div>
 
+        
         {/* Children */}
         <div className="pp-kids">
           {kids.map(({ student, courses, tone, subtitle }) => (
             <article key={student.id} className="pk-card">
+              {/* Child information */}
               <div className="pk-top">
-                <span className="pk-avatar" style={{ background: tone }} aria-hidden="true">
+                <span
+                  className="pk-avatar"
+                  style={{ background: tone }}
+                  aria-hidden="true"
+                >
                   {initialOf(student.name)}
                 </span>
+
                 <div className="pk-name">
                   <strong>{student.name}</strong>
                   {subtitle && <small>{subtitle}</small>}
                 </div>
+
                 <span className="pk-edit" aria-disabled="true" title={t.soon}>
                   {t.editProfile}
                 </span>
               </div>
 
+              {/* Child details */}
               <div className="pk-chips">
                 {student.age ? (
-                  <span className="pk-chip is-blue">{fill(t.ageYears, { n: student.age })}</span>
+                  <span className="pk-chip is-blue">
+                    {fill(t.ageYears, { n: student.age })}
+                  </span>
                 ) : null}
+
                 <span className="pk-chip">
-                  {courses.length ? fill(t.coursesCount, { n: courses.length }) : t.noCourses}
+                  {courses.length
+                    ? fill(t.coursesCount, { n: courses.length })
+                    : t.noCourses}
                 </span>
               </div>
 
+              {/* Courses */}
               {courses.length === 0 ? (
                 <div className="pp-empty">
                   <div>
@@ -641,69 +680,98 @@ function ParentPortal() {
                   </Link>
                 </div>
               ) : (
-                <div
-                  className="pk-course-grid"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                    gap: "12px",
-                  }}
-                >
-                  {courses.map((c) => (
-                    <div key={c.id}>
-                      <div className="pk-tile" style={{ background: tone }}>
-                        <span className="pk-tile-title">{c.name}</span>
+                <>
+                  <div
+                    className="pk-course-grid"
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                      columnGap: "20px",
+                      rowGap: "20px"
+                    }}
+                  >
+                    {courses.map((c) => (
+                      <div key={c.id}>
+                        {/* Package information */}
+                        <div className="pk-tile" style={{ background: tone }}>
+                          <span className="pk-tile-title">{c.name}</span>
 
-                        <div className="pk-tile-row">
-                          <span>
-                            {[
-                              fill(t.packageLine, { n: c.total }),
-                              c.price
-                                ? `฿${Number(c.price).toLocaleString("en-US")}`
-                                : null,
-                            ]
-                              .filter(Boolean)
-                              .join(" · ")}
-                          </span>
-                          <b>{fill(t.remaining, { n: c.remaining })}</b>
+                          <div className="pk-tile-row">
+                            <span>
+                              {[
+                                fill(t.packageLine, { n: c.total }),
+                                c.price
+                                  ? `฿${Number(c.price).toLocaleString("en-US")}`
+                                  : null,
+                              ]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+
+                            <b>{fill(t.remaining, { n: c.remaining })}</b>
+                          </div>
+
+                          <div
+                            className="pk-bar"
+                            role="img"
+                            aria-label={`${fill(t.remaining, {
+                              n: c.remaining,
+                            })} / ${c.total}`}
+                          >
+                            {Array.from({ length: c.total }).map((_, i) => (
+                              <i
+                                key={i}
+                                className={i < c.remaining ? "is-on" : ""}
+                              />
+                            ))}
+                          </div>
+
+                          <small>
+                            {fill(t.usage, {
+                              done: c.done,
+                              booked: c.booked,
+                            })}{" "}
+                            · {t.noExpiry}
+                          </small>
                         </div>
 
-                        <div
-                          className="pk-bar"
-                          role="img"
-                          aria-label={`${fill(t.remaining, { n: c.remaining })} / ${c.total}`}
+                        {/* Package status */}
+                        <p
+                          className={`pk-status${
+                            c.remaining > 0 ? " is-ok" : ""
+                          }`}
                         >
-                          {Array.from({ length: c.total }).map((_, i) => (
-                            <i key={i} className={i < c.remaining ? "is-on" : ""} />
-                          ))}
-                        </div>
+                          {fill(
+                            c.remaining > 0
+                              ? t.hasRemaining
+                              : t.noRemaining,
+                            { course: c.name }
+                          )}
+                        </p>
 
-                        <small>
-                          {fill(t.usage, { done: c.done, booked: c.booked })} · {t.noExpiry}
-                        </small>
+                        {/* Book this course */}
+                        <div className="pk-actions">
+                          <Link
+                            className="pk-primary"
+                            to={`${BOOK_PATH}?student=${encodeURIComponent(
+                              student.id
+                            )}&course=${encodeURIComponent(c.id)}`}
+                          >
+                            {t.book}
+                          </Link>
+
+                          <Link
+                              className="pk-outline"
+                              to={`/parent-progress?student=${encodeURIComponent(student.id)}&course=${encodeURIComponent(c.id)}`}
+                            >
+                              {t.progress}
+                            </Link> 
+                          </div>
                       </div>
-
-                      <p className={`pk-status${c.remaining > 0 ? " is-ok" : ""}`}>
-                        {fill(c.remaining > 0 ? t.hasRemaining : t.noRemaining, {
-                          course: c.name,
-                        })}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-                  <div className="pk-actions">
-                    <Link className="pk-primary" to={`${BOOK_PATH}?student=${student.id}`}>
-                      {fill(t.bookFor, { name: student.name })}
-                    </Link>
-                    <span className="pk-outline" aria-disabled="true" title={t.soon}>
-                      {t.progress}
-                    </span>
-                    <Link className="pk-link" to={COURSES_PATH}>
-                      {t.buySimple}
-                    </Link>
+                    ))}
                   </div>
+                </>
+              )}
             </article>
           ))}
         </div>
