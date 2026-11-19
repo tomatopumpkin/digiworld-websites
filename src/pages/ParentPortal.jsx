@@ -428,7 +428,17 @@ function ParentPortal() {
         byCourse[p.course_id].push(p);
       });
       const courses = Object.entries(byCourse).map(([id, pkgs]) => {
-        const total = pkgs.reduce((n, p) => n + p.total_sessions, 0);
+        // Matata มีจำนวนครั้งทั้งหมด 16 ครั้ง
+        const total =
+          id === "matata" ? 16 :
+          id === "spike-essential" ? 8:
+          id === "procreate" ? 8:
+          id === "scratch-game-design" ? 8:
+          id === "spike-prime" ? 8:
+          id === "roblox-game-maker" ? 12:
+          id === "python-programming" ? 12:
+          pkgs.reduce((n, p) => n + p.total_sessions, 0);
+
         const remaining = pkgs.reduce((n, p) => n + p.sessions_remaining, 0);
         const booked = future.filter((b) => b.class_sessions.course_id === id).length;
         // "remaining" = not yet booked, so attended = total - remaining - booked ahead
@@ -625,27 +635,39 @@ function ParentPortal() {
                     <strong>{t.noPackageTitle}</strong>
                     <p className="pp-muted">{t.noPackageText}</p>
                   </div>
+
                   <Link className="pp-primary is-sm" to={COURSES_PATH}>
                     {t.buy}
                   </Link>
                 </div>
               ) : (
-                <>
+                <div
+                  className="pk-course-grid"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                    gap: "12px",
+                  }}
+                >
                   {courses.map((c) => (
-                    <React.Fragment key={c.id}>
+                    <div key={c.id}>
                       <div className="pk-tile" style={{ background: tone }}>
                         <span className="pk-tile-title">{c.name}</span>
+
                         <div className="pk-tile-row">
                           <span>
                             {[
                               fill(t.packageLine, { n: c.total }),
-                              c.price ? `฿${Number(c.price).toLocaleString("en-US")}` : null,
+                              c.price
+                                ? `฿${Number(c.price).toLocaleString("en-US")}`
+                                : null,
                             ]
                               .filter(Boolean)
                               .join(" · ")}
                           </span>
                           <b>{fill(t.remaining, { n: c.remaining })}</b>
                         </div>
+
                         <div
                           className="pk-bar"
                           role="img"
@@ -655,15 +677,21 @@ function ParentPortal() {
                             <i key={i} className={i < c.remaining ? "is-on" : ""} />
                           ))}
                         </div>
+
                         <small>
                           {fill(t.usage, { done: c.done, booked: c.booked })} · {t.noExpiry}
                         </small>
                       </div>
+
                       <p className={`pk-status${c.remaining > 0 ? " is-ok" : ""}`}>
-                        {fill(c.remaining > 0 ? t.hasRemaining : t.noRemaining, { course: c.name })}
+                        {fill(c.remaining > 0 ? t.hasRemaining : t.noRemaining, {
+                          course: c.name,
+                        })}
                       </p>
-                    </React.Fragment>
+                    </div>
                   ))}
+                </div>
+              )}
 
                   <div className="pk-actions">
                     <Link className="pk-primary" to={`${BOOK_PATH}?student=${student.id}`}>
@@ -676,8 +704,6 @@ function ParentPortal() {
                       {t.buySimple}
                     </Link>
                   </div>
-                </>
-              )}
             </article>
           ))}
         </div>
