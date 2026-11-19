@@ -95,6 +95,16 @@
 .pp-tab.is-on { color: var(--blue); font-weight: 600; border-bottom-color: var(--blue); }
 .pp-tab:disabled { opacity: 0.55; cursor: not-allowed; }
 
+.pp-tabs {
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.pp-tabs::-webkit-scrollbar {
+  display: none;
+}
+
 /* Family header */
 .pp-family { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .pp-family h2 { margin: 0 0 3px; font-size: 23px; font-weight: 400; }
